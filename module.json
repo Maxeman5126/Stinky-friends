@@ -1,0 +1,14 @@
+{
+    "name": "stinky-friends",
+    "author": "Maxeman",
+    "description": "Automatically whisper your friends, telling them how stinky they are.",
+    "options": {
+        "niceName": "Stinky Friends",
+        "reloadable": true,
+        "settingsVersion": 1,
+        "settingsFile": "config.json"
+    },
+    "disableAutoUpdate": false,
+    "version": "01/17/2024",
+    "servers": ["https://raw.githubusercontent.com/Maxeman5126/stinky-friends/master/"]
+}
