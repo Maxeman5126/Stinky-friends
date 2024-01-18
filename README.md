@@ -12,6 +12,6 @@ Automatically whisper your friends, telling them how stinky they are.
 
 **/8 stinky list** | Lists the current stinky people.
 
-**/8 stinky list add [name]** | Adds a stinker to the whitelist.
+**/8 stinky list add [name] "optional Personalized Message in quotes"** | Adds a stinker to the whitelist with a personalized message. Default message will be used if none is entered..
 
 **/8 stinky list remove [name]** | Removes a stinker from the whitelist.
