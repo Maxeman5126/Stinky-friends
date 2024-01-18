@@ -23,24 +23,26 @@ module.exports = function stinkyFriends(mod) {
             mod.command.message(`Whitelist ${mod.settings.whitelistMode?'en':'dis'}abled.`);
 		},
 		debug() {
+			debug = !debug;
             mod.command.message(`Debug ${debug?'en':'dis'}abled.`);
 		},
-		list(action, name) {
+		list(action, name, msg) {
+			if (!msg) msg = "default";
 			if (!name) {
-				mod.command.message(`Current stinky people:`);
+				mod.command.message(`Current stinky people and their messages:`);
 				Object.keys(mod.settings.whitelist).forEach(key => {
-					mod.command.message(`${key}`);
+					mod.command.message(`${key} : ${mod.settings.whitelist[key]}`);
 				});
 			} else {
 				if (action === "add") {
-					mod.settings.whitelist[name] = true;
+					mod.settings.whitelist[name.toLowerCase()] = msg;
 					mod.command.message(`${name} is now a stinky friend.`);
 				} else if (action === "remove") {
-					if (!(name in mod.settings.whitelist)) {
+					if (!(name.toLowerCase() in mod.settings.whitelist)) {
 						mod.command.message(`${name} was already not stinky.`)
 						return;
 					}
-					delete mod.settings.whitelist[name];
+					delete mod.settings.whitelist[name.toLowerCase()];
 					mod.command.message(`${name} is no longer a stinky friend.`);
 				}
 			}
@@ -60,9 +62,17 @@ module.exports = function stinkyFriends(mod) {
         } else {
 			stinky = false;
             for (let friend of event.friends) {
-				if (!(mod.settings.whitelistMode) || friend.name in mod.settings.whitelist) {
-					if(debug) mod.log(`stinky friend: ${friend.name}`);
-					MSG.whisper(friend.name,mod.settings.msg);
+				if (friend.status == 2) {
+					if(debug) mod.log(`offline friend: ${friend.name}`);
+				} else if (!(mod.settings.whitelistMode) || friend.name.toLowerCase() in mod.settings.whitelist) {
+					let msg;
+					if(!(mod.settings.whitelist[friend.name.toLowerCase()]) || mod.settings.whitelist[friend.name.toLowerCase()] === "default") {
+						msg = mod.settings.msg;
+					} else {
+						msg = mod.settings.whitelist[friend.name.toLowerCase()];
+					}
+					if(debug) mod.log(`stinky friend: ${friend.name}. Message: ${msg}`);
+					MSG.whisper(friend.name, msg);
 				} else {
 					if(debug) mod.log(`non-stinky friend: ${friend.name}`);
 				}

@@ -1,8 +1,9 @@
 const DefaultSettings = {
         "whitelist": {
-			"maxeman": true
-		},
-		"whitelistMode": true,
+            "maxeman": "default",
+            "teacup": "default"
+        },
+        "whitelistMode": true,
         "enabled": true,
         "msg": "Hey, you're pretty!...... Pretty stinky"
     }

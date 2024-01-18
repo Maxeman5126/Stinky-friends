@@ -1,6 +1,11 @@
 {
     "version": 1,
     "data": {
+        "whitelist": {
+            "maxeman": "default",
+            "teacup": "default"
+        },
+        "whitelistMode": true,
         "enabled": true,
         "msg": "Ignore this. I'm testing :)"
     }
