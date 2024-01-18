@@ -1,6 +1,10 @@
 const DefaultSettings = {
+        "whitelist": {
+			"maxeman": true
+		},
+		"whitelistMode": true,
         "enabled": true,
-        "msg": "Ignore this. I'm testing :)"
+        "msg": "Hey, you're pretty!...... Pretty stinky"
     }
 
 module.exports = function MigrateSettings(from_ver, to_ver, settings) {
