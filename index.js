@@ -5,32 +5,67 @@ const Prim = "#9f80ff", Seco = "#bf80ff", Tert = "#df80ff", Gry = "#999999", Wht
 module.exports = function stinkyFriends(mod) {
 	const MSG = new TeraMessage(mod);
 	let stinky = false;
+	let debug = false;
 	
 	mod.command.add("stinky", {
 		$none() {
 			mod.settings.enabled = !mod.settings.enabled;
-            mod.command.message(`Stinky Friends ${mod.settings.enabled?'en':'dis'}abled.`);
+            mod.command.message(`${mod.settings.enabled?'en':'dis'}abled.`);
 		},
 		message(msg) {
 			if (!msg) return mod.command.message(`${id} invalid command usage consult readme for an example.`);
 			
-			mod.command.message(`Changing Stinky Friends Whisper from ${mod.settings.msg} to ${msg}`);
+			mod.command.message(`Changing whisper from ${mod.settings.msg} to ${msg}`);
 			mod.settings.msg = msg;
+		},
+		mode() {
+			mod.settings.whitelistMode = !mod.settings.whitelistMode;
+            mod.command.message(`Whitelist ${mod.settings.whitelistMode?'en':'dis'}abled.`);
+		},
+		debug() {
+            mod.command.message(`Debug ${debug?'en':'dis'}abled.`);
+		},
+		list(action, name) {
+			if (!name) {
+				mod.command.message(`Current stinky people:`);
+				Object.keys(mod.settings.whitelist).forEach(key => {
+					mod.command.message(`${key}`);
+				});
+			} else {
+				if (action === "add") {
+					mod.settings.whitelist[name] = true;
+					mod.command.message(`${name} is now a stinky friend.`);
+				} else if (action === "remove") {
+					if (!(name in mod.settings.whitelist)) {
+						mod.command.message(`${name} was already not stinky.`)
+						return;
+					}
+					delete mod.settings.whitelist[name];
+					mod.command.message(`${name} is no longer a stinky friend.`);
+				}
+			}
 		}
 	});
 	
 	mod.hook('S_LOGIN', 'raw', event => {
+		if(debug) mod.log('stinky login');
         if(mod.settings.enabled) {
 			stinky = true;
 		};
     });
-	mod.hook('S_UPDATE_FRIEND_INFO', 1, event => {
+	mod.hook('S_UPDATE_FRIEND_INFO', 1,{ order: -1000 }, event => {
+		if(debug) mod.log('stinky update friend info');
         if (!mod.settings.enabled || !stinky) {
             return;
         } else {
 			stinky = false;
             for (let friend of event.friends) {
-                MSG.whisper(friend.name,mod.settings.msg);
+				if (!(mod.settings.whitelistMode) || friend.name in mod.settings.whitelist) {
+					if(debug) mod.log(`stinky friend: ${friend.name}`);
+					MSG.whisper(friend.name,mod.settings.msg);
+				} else {
+					if(debug) mod.log(`non-stinky friend: ${friend.name}`);
+				}
             }
         }
     });
