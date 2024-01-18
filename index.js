@@ -4,13 +4,19 @@ const Prim = "#9f80ff", Seco = "#bf80ff", Tert = "#df80ff", Gry = "#999999", Wht
 
 module.exports = function stinkyFriends(mod) {
 	const MSG = new TeraMessage(mod);
+	let characterId = null;
 	let stinky = false;
 	let debug = false;
 	
 	mod.command.add("stinky", {
 		$none() {
-			mod.settings.enabled = !mod.settings.enabled;
-            mod.command.message(`${mod.settings.enabled?'en':'dis'}abled.`);
+			mod.settings.characters[characterId].enabled = !mod.settings.characters[characterId].enabled;
+			mod.command.message(`${mod.settings.characters[characterId].enabled?'en':'dis'}abled for ${mod.settings.characters[characterId].name}.`);
+		},
+		characters(){
+			mod.command.message(`Your confirmed stinky characters`);
+			Object.keys(mod.settings.characters).forEach(key => {
+				mod.command.message(`${key} : ${mod.settings.characters[key].name}`);
 		},
 		message(msg) {
 			if (!msg) return mod.command.message(`${id} invalid command usage consult readme for an example.`);
@@ -48,16 +54,24 @@ module.exports = function stinkyFriends(mod) {
 			}
 		}
 	});
-	
-	mod.hook('S_LOGIN', 'raw', event => {
+	mod.hook("S_LOGIN", 14, event => {
+		characterId = `${event.playerId}_${event.serverId}`;
+		if (mod.settings.characters[characterId] == undefined) {
+			mod.settings.characters[characterId] = {
+				"name": event.name,
+				"enabled": false
+			};
+		} else if (mod.settings.characters[characterId].name !== event.name){
+			mod.settings.characters[characterId].name = event.name;
+		}
 		if(debug) mod.log('stinky login');
-        if(mod.settings.enabled) {
+        if(mod.settings.characters[characterId].enabled) {
 			stinky = true;
 		};
-    });
+	});
 	mod.hook('S_UPDATE_FRIEND_INFO', 1,{ order: -1000 }, event => {
 		if(debug) mod.log('stinky update friend info');
-        if (!mod.settings.enabled || !stinky) {
+        if (!mod.settings.characters[characterId].enabled || !stinky) {
             return;
         } else {
 			stinky = false;

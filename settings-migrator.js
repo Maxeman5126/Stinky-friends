@@ -3,6 +3,7 @@ const DefaultSettings = {
             "maxeman": "default",
             "teacup": "default"
         },
+        "characters": {},
         "whitelistMode": true,
         "enabled": true,
         "msg": "Hey, you're pretty!...... Pretty stinky"
@@ -28,9 +29,18 @@ module.exports = function MigrateSettings(from_ver, to_ver, settings) {
         // upgrade from any version to the latest version without additional effort!
         switch (to_ver) {
             case 2:
+                settings.characters = {};
                 break;
-        }
-
-        return settings;
+			default:
+				const oldsettings = settings;
+				settings = Object.assign(DefaultSettings, {});
+				for (const option in oldsettings) {
+					if (settings[option]) {
+						settings[option] = oldsettings[option];
+					}
+				}
+				break;
+		}
+		return settings;
     }
 }
