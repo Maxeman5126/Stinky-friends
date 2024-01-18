@@ -6,7 +6,8 @@
         "niceName": "Stinky Friends",
         "reloadable": true,
         "settingsVersion": 1,
-        "settingsFile": "config.json"
+        "settingsFile": "config.json",
+        "settingsMigrator": "settings-migrator.js"
     },
     "disableAutoUpdate": false,
     "version": "01/17/2024",
