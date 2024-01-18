@@ -17,7 +17,7 @@ module.exports = function stinkyFriends(mod) {
 			mod.command.message(`Your confirmed stinky characters`);
 			Object.keys(mod.settings.characters).forEach(key => {
 				mod.command.message(`${key} : ${mod.settings.characters[key].name}`);
-			}
+			});
 		},
 		message(msg) {
 			if (!msg) return mod.command.message(`${id} invalid command usage consult readme for an example.`);
